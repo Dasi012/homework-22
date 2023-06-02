@@ -25,9 +25,11 @@ export const addItem = createAsyncThunk(
       });
 
       dispatch(getBasket());
+      payload.successHandler();
 
       return await response.items;
     } catch (error) {
+      payload.errorHandler();
       return rejectWithValue(
         error?.response?.messege || "Something went wrong!"
       );

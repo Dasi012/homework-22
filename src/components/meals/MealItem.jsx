@@ -1,18 +1,20 @@
-import React, { useCallback } from 'react'
-import styled from 'styled-components'
-import { MealsItemForm } from './MealsItemForm'
-import { useDispatch } from 'react-redux'
-import { addItem } from '../../store/basket/basketThunk'
+import React from "react";
+import styled from "styled-components";
+import { MealsItemForm } from "./MealsItemForm";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../store/basket/basketThunk";
 
-export const MealItem = ({ meal }) => {
-  const dispatch = useDispatch()
+export const MealItem = ({ meal, errorHandler, successHandler }) => {
+  const dispatch = useDispatch();
 
-  const addBasket = useCallback(
-    (amount) => {
-      dispatch(addItem({id:meal._id,amount}))
-    },
-    [dispatch, meal._id]
-  )
+  const addBasket = async (amount) => {
+    try {
+      await dispatch(addItem({ id: meal._id, amount: amount })).unwrap();
+      successHandler();
+    } catch (error) {
+      errorHandler();
+    }
+  };
 
   return (
     <StyledItem>
@@ -25,8 +27,8 @@ export const MealItem = ({ meal }) => {
         <MealsItemForm id={meal._id} price={meal.price} onAdd={addBasket} />
       </div>
     </StyledItem>
-  )
-}
+  );
+};
 
 const StyledItem = styled.li`
   list-style: none;
@@ -40,7 +42,7 @@ const StyledItem = styled.li`
     border: none;
     margin-bottom: -10px;
   }
-`
+`;
 
 const StyledItemInfo = styled.div`
   margin-bottom: 20px;
@@ -52,7 +54,7 @@ const StyledItemInfo = styled.div`
     color: #ad5502;
     margin-top: 4px;
   }
-`
+`;
 
 const DescriptionStyles = styled.p`
   font-style: italic;
@@ -60,10 +62,10 @@ const DescriptionStyles = styled.p`
   font-size: 16px;
   line-height: 24px;
   color: #222222;
-`
+`;
 
 const StyledTitle = styled.h4`
   font-weight: 600;
   font-size: 18px;
   color: #222222;
-`
+`;
